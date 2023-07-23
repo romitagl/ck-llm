@@ -2,11 +2,41 @@
 
 Custom Knowledge LLM - Use a base LLM and infuse structured knowledge
 
+## Quickstart
+
+```bash
+pip install huggingface_hub
+huggingface-cli login
+```
+
+### Llama-2-7b
+
+```bash
+cd llama-2-7b-hf
+python -m pip install -r requirements.txt 
+python text-completion.py
+```
+
+Run in a `C` program: <https://github.com/karpathy/llama2.c>/.
+
+### Notes
+
+LlamaTokenizer requires the SentencePiece library. Checkout the instructions on the
+installation page of its repo: <https://github.com/google/sentencepiece#installation>.
+
+On Mac, install the sentencepiece library with: `brew install sentencepiece`.
+
 ## Description
 
 ### How does a GPT model work?
 
-A GPT model is a type of neural network that uses the transformer architecture to learn from large amounts of text data. The model has two main components: an encoder and a decoder. The encoder processes the input text and converts it into a sequence of vectors, called embeddings, that represent the meaning and context of each word. The decoder generates the output text by predicting the next word in the sequence, based on the embeddings and the previous words. The model uses a technique called attention to focus on the most relevant parts of the input and output texts, and to capture long-range dependencies and relationships between words. The model is trained by using a large corpus of texts as both the input and the output, and by minimizing the difference between the predicted and the actual words. The model can then be fine-tuned or adapted to specific tasks or domains, by using smaller and more specialized datasets.
+A GPT model is a type of neural network that uses the transformer architecture to learn from large amounts of text data.
+The model has two main components: an encoder and a decoder.
+The encoder processes the input text and converts it into a sequence of vectors, called embeddings, that represent the meaning and context of each word.
+The decoder generates the output text by predicting the next word in the sequence, based on the embeddings and the previous words.
+The model uses a technique called attention to focus on the most relevant parts of the input and output texts, and to capture long-range dependencies and relationships between words.
+The model is trained by using a large corpus of texts as both the input and the output, and by minimizing the difference between the predicted and the actual words.
+The model can then be fine-tuned or adapted to specific tasks or domains, by using smaller and more specialized datasets.
 
 ### Fine-tuning
 
@@ -54,7 +84,7 @@ Remember that fine-tuning a GPT model may require significant computational reso
 
 ## GitHub Actions
 
-[![Lint Code Base](https://github.com/romitagl/ck-llm/actions/workflows/super-linter.yml/badge.svg?branch=main)](https://github.com/romitagl/ck-llm/actions/workflows/super-linter.yml)
+[![Lint Code Base](https://github.com/romitagl/ck-llm/actions/workflows/super-linter.yml/badge.svg)](https://github.com/romitagl/ck-llm/actions/workflows/super-linter.yml)
 
 ## Developer Notes
 
@@ -74,6 +104,10 @@ Run check on the local folder:
 docker run --rm -e RUN_LOCAL=true -v `pwd`:/tmp/lint github/super-linter:latest
 ```
 
-## Copyright
+### Hugging Face
 
-Copyright (c) [2023] [Gian Luigi Romita]
+<https://huggingface.co/welcome>
+
+### LLAMA
+
+<https://github.com/facebookresearch/llama>
