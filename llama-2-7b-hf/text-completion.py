@@ -1,7 +1,7 @@
-from transformers import AutoTokenizer
+import torch
 # from transformers import LlamaForCausalLM, LlamaTokenizer
 import transformers
-import torch
+from transformers import AutoTokenizer
 
 # REFERENCE: https://huggingface.co/blog/llama2
 model = "meta-llama/Llama-2-7b-hf"
