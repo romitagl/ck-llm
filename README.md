@@ -104,6 +104,8 @@ Run check on the local folder:
 docker run --rm -e RUN_LOCAL=true -v `pwd`:/tmp/lint github/super-linter:latest
 ```
 
+## Tooling
+
 ### Hugging Face
 
 <https://huggingface.co/welcome>
@@ -111,3 +113,11 @@ docker run --rm -e RUN_LOCAL=true -v `pwd`:/tmp/lint github/super-linter:latest
 ### LLAMA
 
 <https://github.com/facebookresearch/llama>
+
+### LangChain
+
+<https://github.com/langchain-ai/langchain>
+
+### Milvus
+
+<https://github.com/milvus-io/milvus>
