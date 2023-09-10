@@ -28,8 +28,15 @@ On Mac, install the sentencepiece library with: `brew install sentencepiece`.
 
 ## Description
 
-Traditionally, a base model is trained with point-in-time data to ensure its effectiveness in performing specific tasks and adapting to the desired domain. However, sometimes you need to work with newer or more current data. Two approaches can supplement the base model: fine-tuning or further training of the base model with new data, or RAG that uses prompt engineering to supplement or guide the model in real time.
-Fine-tuning is suitable for continuous domain adaptation, enabling significant improvements in model quality but often incurring higher costs. Conversely, RAG offers an alternative approach, allowing the use of the same model as a reasoning engine over new data provided in a prompt. This technique enables in-context learning without the need for expensive fine-tuning, empowering businesses to use LLMs more efficiently.
+Traditionally, a base model is trained with point-in-time data to ensure its effectiveness in performing specific tasks and adapting to the desired domain. However, sometimes you need to work with newer or more current data.
+Two approaches can supplement the base model:
+
+- fine-tuning or further training of the base model with new data
+- RAG that uses prompt engineering to supplement or guide the model in real time.
+
+Fine-tuning is suitable for continuous domain adaptation, enabling significant improvements in model quality but often incurring higher costs.
+Conversely, RAG offers an alternative approach, allowing the use of the same model as a reasoning engine over new data provided in a prompt.
+This technique enables in-context learning without the need for expensive fine-tuning, empowering businesses to use LLMs more efficiently.
 
 ### Fine-tuning
 
@@ -81,7 +88,12 @@ Source: <https://learn.microsoft.com/en-us/azure/machine-learning/concept-retrie
 
 Retrieval Augmented Generation (RAG) is a pattern that works with pretrained Large Language Models (LLM) and your own data to generate responses.
 
-In information retrieval, RAG is an approach that enables you to harness the power of LLMs with your own data. Enabling an LLM to access custom data involves the following steps. First, the large data should be chunked into manageable pieces. Second, the chunks need to be converted into a searchable format. Third, the converted data should be stored in a location that allows efficient access. Additionally, it's important to store relevant metadata for citations or references when the LLM provides responses.
+In information retrieval, RAG is an approach that enables you to harness the power of LLMs with your own data.
+Enabling an LLM to access custom data involves the following steps.
+First, the large data should be chunked into manageable pieces.
+Second, the chunks need to be converted into a searchable format.
+Third, the converted data should be stored in a location that allows efficient access.
+Additionally, it's important to store relevant metadata for citations or references when the LLM provides responses.
 
 Data chunking: The data in your source needs to be converted to plain text. For example, word documents or PDFs need to be cracked open and converted to text. The text is then chunked into smaller pieces.
 
