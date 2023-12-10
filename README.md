@@ -141,11 +141,15 @@ docker run --rm -e RUN_LOCAL=true -v `pwd`:/tmp/lint github/super-linter:latest
 
 <https://huggingface.co/welcome>
 
-#### LLAMA
+### LLAMA
 
 LLaMA models: <https://github.com/facebookresearch/llama>.
 
-#### roneneldan/TinyStories-33M
+### Ollama
+
+Ollama makes it easy to host any model locally: <https://ollama.ai>.
+
+### roneneldan/TinyStories-33M
 
 Model trained on the TinyStories Dataset: <https://huggingface.co/roneneldan/TinyStories-33M/tree/main>.
 
