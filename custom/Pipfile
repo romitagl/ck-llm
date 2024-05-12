@@ -13,6 +13,8 @@ python_version = "3.12"
 nltk = "*"
 # transformers for the Transformers library, which includes pre-trained models and utilities for training and fine-tuning transformer models
 transformers = "*"
+# sentence-transformers for sentence embeddings
+sentence-transformers = "*"
 # torch and torchvision for building and training neural networks
 torch = "*"
 torchvision = "*"
