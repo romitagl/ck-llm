@@ -3,6 +3,9 @@ import nltk
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize, sent_tokenize
 
+# Set the PYTORCH_CUDA_ALLOC_CONF environment variable
+os.environ['PYTORCH_CUDA_ALLOC_CONF'] = 'expandable_segments:True'
+
 # Download necessary NLTK resources
 nltk.download('punkt')
 nltk.download('stopwords')
@@ -55,15 +58,19 @@ print(f"Size of X_train: {len(X_train)}\nSize of X_val: {len(X_val)}\nSize of X_
 from transformers import GPT2LMHeadModel, GPT2Tokenizer, TrainingArguments, Trainer
 import torch
 
+# Check if CUDA (GPU) is available
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
 # Load the pre-trained GPT-2 model and tokenizer
-model = GPT2LMHeadModel.from_pretrained('gpt2')
+model = GPT2LMHeadModel.from_pretrained('gpt2').to(device)
 tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
 
 # Set the pad token
 tokenizer.pad_token = tokenizer.eos_token
 
 # Encode the training data
-train_encodings = tokenizer(X_train, truncation=True, padding=True, return_tensors='pt')
+train_encodings = tokenizer(preprocessed_data, truncation=True, padding=True, return_tensors='pt')
+
 
 # Create a PyTorch dataset
 class WikiDataset(torch.utils.data.Dataset):
@@ -82,27 +89,60 @@ train_dataset = WikiDataset(train_encodings)
 # Define training arguments
 training_args = TrainingArguments(
     output_dir='./results',
-    num_train_epochs=3,
-    per_device_train_batch_size=8,
-    save_steps=10000,
-    save_total_limit=2,
+    num_train_epochs=4,
+    per_device_train_batch_size=4,
+    save_steps=1000,
+    save_total_limit=2
 )
 
-# Create a Trainer instance and fine-tune the model
+
+# Define the training step function to calculate the loss
+def training_step(model, inputs):
+    outputs = model(**inputs)
+    loss = outputs.loss
+    if loss is not None:
+        return loss
+    else:
+        return torch.tensor(0.0, device=device)
+
+
+def compute_metrics(eval_pred):
+    return {'eval_loss': eval_pred.metrics['loss']}
+
+
+# Define the Trainer with the custom data collator
 trainer = Trainer(
     model=model,
     args=training_args,
     train_dataset=train_dataset,
+    compute_metrics=compute_metrics
 )
 
+# Override the training_step method of the Trainer with the custom training_step function
+trainer.training_step = training_step
+
+# Train the model
 trainer.train()
 
 # Evaluate the model on the validation set
 val_encodings = tokenizer(X_val, truncation=True, padding=True, return_tensors='pt')
 val_dataset = WikiDataset(val_encodings)
 
+print(f'Training Loss: {trainer.evaluate(train_dataset)["loss"]}')
 eval_results = trainer.evaluate(val_dataset)
-print(f'Validation Loss: {eval_results["eval_loss"]}')
+print(f'Validation Loss: {eval_results["loss"]}')
 
-# save model
-trainer.save_model('./fine-tuned-model')
+# Check the available keys in the eval_results dictionary
+print(f"Available keys in eval_results: {eval_results.keys()}")
+
+# Access the loss value based on the available keys
+if 'eval_loss' in eval_results:
+    print(f'Validation Loss: {eval_results["eval_loss"]}')
+elif 'loss' in eval_results:
+    print(f'Validation Loss: {eval_results["loss"]}')
+else:
+    print("Validation loss not found in eval_results.")
+
+# Save the fine-tuned model and tokenizer
+model.save_pretrained('./fine-tuned-model')
+tokenizer.save_pretrained('./fine-tuned-model')

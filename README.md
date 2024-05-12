@@ -132,7 +132,7 @@ To fine-tune a custom large language model (LLM) using data from your Wiki repos
    val_dataset = WikiDataset(val_encodings)
 
    eval_results = trainer.evaluate(val_dataset)
-   print(f'Validation Loss: {eval_results["eval_loss"]}')
+   print(f'Validation Loss: {eval_results["loss"]}')
    ```
 
    Code above evaluates the fine-tuned model on the validation set using the evaluate method of the Trainer API. The validation loss is printed as an indicator of the model's performance.
@@ -140,7 +140,9 @@ To fine-tune a custom large language model (LLM) using data from your Wiki repos
 6. **Model Deployment**: Once you're satisfied with your model's performance, you can deploy it for use in your application. This might involve integrating the model into your application's codebase or using it as a standalone service.
 
    ```python
-   trainer.save_model('./fine-tuned-model')
+   model.save_pretrained('./fine-tuned-model')
+   tokenizer.save_pretrained('./fine-tuned-model')
+
    ```
 
    This code saves the fine-tuned model to the fine-tuned-model directory, which can then be used in your application or deployed as a standalone service.
