@@ -64,114 +64,13 @@ Preprocess Data: This function tokenizes documents and builds an inverted index 
 Answer Question: This function takes a question, encodes it, and retrieves documents relevant to the question words using the inverted index. It then calculates the cosine similarity between the question vector and each document vector to rank them. Finally, it returns the top-ranked documents as the answer.
 """
 
-import os
-import nltk
-from nltk.corpus import stopwords
-from nltk.tokenize import word_tokenize, sent_tokenize
-from collections import defaultdict
-from sentence_transformers import SentenceTransformer, util
-import torch
+from retrieval_based_qa import answer_question
 
-
-# Download necessary NLTK resources
-nltk.download("punkt")
-nltk.download("stopwords")
-
-# Specify the directory containing the .md files
-wiki_dir = "kgraph.wiki"
-
-
-# Initialize an empty list to store the preprocessed data
-preprocessed_data = []
-
-# Iterate over all .md files in the wiki_dir directory
-for filename in os.listdir(wiki_dir):
-    if filename.endswith(".md"):
-        file_path = os.path.join(wiki_dir, filename)
-        with open(file_path, "r") as file:
-            wiki_data = file.read()
-
-        # Tokenize the text into sentences
-        sentences = sent_tokenize(wiki_data)
-
-        # Tokenize each sentence into words
-        tokenized_sentences = [
-            word_tokenize(sentence, preserve_line=True) for sentence in sentences
-        ]
-
-        # Remove stop words
-        stop_words = set(stopwords.words("english"))
-        filtered_sentences = [
-            [word for word in sentence if word.lower() not in stop_words]
-            for sentence in tokenized_sentences
-        ]
-
-        # Join the filtered words back into sentences
-        preprocessed_sentences = [" ".join(sentence) for sentence in filtered_sentences]
-
-        # Print sample preprocessed_sentences
-        print(
-            f"Sample preprocessed sentences from file {filename}: {preprocessed_sentences[0]}"
-        )
-
-        # Append the preprocessed sentences to the preprocessed_data list
-        preprocessed_data.extend(preprocessed_sentences)
-
-        # Print size of preprocessed_data
-        print(f"Current size of preprocessed_data: {len(preprocessed_data)} sentences")
-
-
-# Load Sentence Transformer model (you'll need to install it)
-model = SentenceTransformer("all-mpnet-base-v2")
-
-
-# Preprocess your data
-def preprocess_data(data):
-    documents = []
-    inverted_index = defaultdict(list)
-    for doc in data:
-        text = doc
-        documents.append(text)
-        tokens = text.lower().split()  # Tokenize and lowercase
-        for token in tokens:
-            inverted_index[token].append(documents.index(text))
-    return documents, inverted_index
-
-
-# Load your preprocessed data
-documents, inverted_index = preprocess_data(preprocessed_data)
-
-
-def answer_question(question):
-    device = torch.device(
-        "cuda" if torch.cuda.is_available() else "cpu"
-    )  # Get the available device
-    question_embedding = model.encode(question, convert_to_tensor=True).to(
-        device
-    )  # Move to the device
-    relevant_docs = []
-    for word in question.lower().split():
-        relevant_docs.extend(inverted_index.get(word, []))
-    relevant_docs = set(relevant_docs)  # Remove duplicates
-
-    # Rank documents based on cosine similarity (higher score = more relevant)
-    doc_scores = {
-        doc: util.pytorch_cos_sim(
-            question_embedding, torch.tensor(model.encode(documents[doc])).to(device)
-        )  # Convert to PyTorch tensor and move to the device
-        for doc in relevant_docs
-    }
-    top_docs = sorted(doc_scores.items(), key=lambda item: item[1], reverse=True)[
-        :1
-    ]  # Return top 1
-
-    # Return top documents or their summaries (modify based on your needs)
-    return [documents[doc_id] for doc_id, _ in top_docs]
-
-
-# Example usage
-question = "What are some best practices for writing Dockerfiles?"
-answers = answer_question(question)
-print("Answers:")
+# Get user input for the question
+user_question = input("Enter your question: ")
+if user_question == "":
+    user_question = "What are some best practices for writing Dockerfiles?"
+answers = answer_question(user_question)
+print(f"User Question: {user_question}\n Answers:")
 for answer in answers:
     print(answer)

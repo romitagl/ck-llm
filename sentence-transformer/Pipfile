@@ -1,0 +1,46 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+
+[requires]
+# https://docs.python.org/3.12/whatsnew/3.12.html
+python_version = "3.12"
+
+[packages]
+# Foundamental dependencies
+# nltk for natural language processing tasks
+nltk = "*"
+# transformers for the Transformers library, which includes pre-trained models and utilities for training and fine-tuning transformer models
+transformers = "*"
+# sentence-transformers for sentence embeddings
+sentence-transformers = "*"
+# torch and torchvision for building and training neural networks
+torch = "*"
+torchvision = "*"
+# scikit-learn for machine learning tasks
+scikit-learn = "*"
+# pandas for data manipulation and analysis
+pandas = "*"
+# numpy for numerical computations
+numpy = "*"
+# gitpython for interacting with the Git repository
+gitpython = "*"
+
+[dev-packages]
+# autoflake removes unused imports and unused variables from Python code. It makes use of pyflakes to do this.
+autoflake = "*"
+# Black is the uncompromising Python code formatter. By using it, you agree to cede control over minutiae of
+# hand-formatting. https://pypi.org/project/black/
+black = "*"
+# Linting & toolkit for checking your code base against coding style (PEP8). https://pypi.org/project/flake8/
+flake8 = "*"
+# isort your imports, so you don't have to. https://pypi.org/project/isort/
+isort = "*"
+# The pytest framework makes it easy to write small tests, yet scales to support complex functional testing
+# for applications and libraries. https://pypi.org/project/pytest/
+pytest = "*"
+# Thin-wrapper around the mock package for easier use with pytest. https://pypi.org/project/pytest-mock/
+pytest-mock = "*"
+# This plugin produces coverage reports. https://pypi.org/project/pytest-cov/
+pytest-cov = "*"

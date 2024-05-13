@@ -1,3 +1,5 @@
+# https://www.it-jim.com/blog/training-and-fine-tuning-gpt-2-and-gpt-3-models-using-hugging-face-transformers-and-openai-api/
+
 import os
 import nltk
 from nltk.corpus import stopwords
