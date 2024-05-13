@@ -4,20 +4,45 @@ Custom Knowledge LLM - Use a base LLM and infuse structured knowledge
 
 ## Models
 
-### Custom LLM
+### Retrieval-Based Question Answering
 
-Fine tune a custom LLM using data from my Wiki repository: [wiki](https://github.com/romitagl/kgraph.wiki.git) and running on a Macbook Pro M1.
+This approach retrieves relevant documents from my Wiki repository: [wiki](https://github.com/romitagl/kgraph.wiki.git).
 
-To fine-tune a custom large language model (LLM) using data from your Wiki repository on a MacBook Pro M1, you'll need to follow these theoretical steps:
+Sentence Transformer:
+We use the SentenceTransformer library and the "all-mpnet-base-v2" model to encode questions and documents into high-dimensional vectors.
+The SentenceTransformer library is a powerful tool that can be used for a variety of natural language processing tasks, including question answering.
+The "all-mpnet-base-v2" model is a pre-trained language model that is specifically designed for question answering.
+When we encode a question or document using this model, we get a fixed-length vector that captures the meaning of the input.
 
-1. **Clone the Wiki Repository**: Start by cloning your Wiki repository from GitHub using the command `git clone https://github.com/romitagl/kgraph.wiki.git`. This will download the repository to your local machine, allowing you to access and manipulate the data.
+Preprocess Data:
+This function tokenizes documents and builds an inverted index to efficiently find documents containing specific words.
+Tokenizing involves breaking the text into individual words or subwords.
+The inverted index is a data structure that maps each word or subword to a set of documents that contain that word or subword.
+This allows us to quickly find documents that contain specific words or phrases when answering a question.
+
+Answer Question:
+This function takes a question, encodes it, and retrieves documents relevant to the question words using the inverted index.
+It works as follows:
+
+1. Tokenize the question: Break the question into individual words or subwords.
+2. Encode the question: Use the SentenceTransformer model to encode the question into a fixed-length vector.
+3. Find relevant documents: Use the inverted index to find documents that contain any of the question words or subwords.
+4. Calculate cosine similarity: For each retrieved document, calculate the cosine similarity between the question vector and the document vector.
+5. Rank documents: Rank the documents by their cosine similarity score.
+6. Return top-ranked documents: Return the top-ranked documents as the answer.
+
+The end result is that we can use our custom LLM to answer questions based on the content of my Wiki repository.
+
+#### Steps
+
+**Clone the Wiki Repository**: Start by cloning your Wiki repository from GitHub using the command `git clone https://github.com/romitagl/kgraph.wiki.git`. This will download the repository to your local machine, allowing you to access and manipulate the data.
 
    ```bash
    cd custom
    git clone https://github.com/romitagl/kgraph.wiki.git
    ```
 
-2. **Preprocessing and Data Preparation**: Next, you'll need to preprocess and prepare your data for training the LLM. This typically involves tokenizing the text, removing stop words, and converting the data into a format suitable for model training. You can use libraries like NLTK or spaCy for tokenization and preprocessing.
+**Preprocessing and Data Preparation**: Next, you'll need to preprocess and prepare your data for training the LLM. This typically involves tokenizing the text, removing stop words, and converting the data into a format suitable for model training. You can use libraries like NLTK or spaCy for tokenization and preprocessing.
 
    ```python
    import os
@@ -67,85 +92,11 @@ To fine-tune a custom large language model (LLM) using data from your Wiki repos
 
    Code above reads the Wiki data from the `kgraph.wiki` .md files, tokenizes it into sentences, tokenizes each sentence into words, removes stop words, and joins the filtered words back into sentences.
 
-3. **Splitting Data**: Split your preprocessed data into training, validation, and testing sets. This is crucial for model evaluation and hyperparameter tuning. A common split is 80% for training, 10% for validation, and 10% for testing.
+**Data Preprocessing**: Tokenize your text data (split into words/subwords). Create an inverted index: This data structure maps words/subwords to the documents they appear in.
 
-   ```python
-   from sklearn.model_selection import train_test_split
-
-   X_train, X_test, y_train, y_test = train_test_split(preprocessed_data, preprocessed_data, test_size=0.2, random_state=42)
-   X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.125, random_state=42)
-   ```
-
-   Code above splits the preprocessed data into training, validation, and testing sets using scikit-learn's train_test_split function. The test size is set to 20%, and the validation size is set to 12.5% of the remaining data.
-
-4. **Model Selection and Training**: Choose a suitable LLM architecture and implement it using a deep learning framework like PyTorch or TensorFlow. Train the model on your prepared training data, adjusting hyperparameters as needed to optimize performance.
-
-   ```python
-   from transformers import GPT2LMHeadModel, GPT2Tokenizer, TrainingArguments, Trainer
-
-   # Load the pre-trained GPT-2 model and tokenizer
-   model = GPT2LMHeadModel.from_pretrained('gpt2')
-   tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
-
-   # Encode the training data
-   train_encodings = tokenizer(X_train, truncation=True, padding=True, return_tensors='pt')
-
-   # Create a PyTorch dataset
-   class WikiDataset(torch.utils.data.Dataset):
-      def __init__(self, encodings):
-         self.encodings = encodings
-
-      def __getitem__(self, idx):
-         return {key: torch.tensor(val[idx]) for key, val in self.encodings.items()}
-
-      def __len__(self):
-         return len(self.encodings.input_ids)
-
-   train_dataset = WikiDataset(train_encodings)
-
-   # Define training arguments
-   training_args = TrainingArguments(
-      output_dir='./results',
-      num_train_epochs=3,
-      per_device_train_batch_size=8,
-      save_steps=10000,
-      save_total_limit=2,
-   )
-
-   # Create a Trainer instance and fine-tune the model
-   trainer = Trainer(
-      model=model,
-      args=training_args,
-      train_dataset=train_dataset,
-   )
-
-   trainer.train()
-   ```
-
-   Code above loads the pre-trained GPT-2 model and tokenizer, encodes the training data, creates a PyTorch dataset, defines training arguments, and fine-tunes the model using the Trainer API from the Transformers library.
-
-5. **Model Evaluation and Hyperparameter Tuning**: Evaluate your trained model on the validation set and fine-tune hyperparameters to improve performance. This step is crucial for achieving the best results.
-
-   ```python
-   # Evaluate the model on the validation set
-   val_encodings = tokenizer(X_val, truncation=True, padding=True, return_tensors='pt')
-   val_dataset = WikiDataset(val_encodings)
-
-   eval_results = trainer.evaluate(val_dataset)
-   print(f'Validation Loss: {eval_results["loss"]}')
-   ```
-
-   Code above evaluates the fine-tuned model on the validation set using the evaluate method of the Trainer API. The validation loss is printed as an indicator of the model's performance.
-
-6. **Model Deployment**: Once you're satisfied with your model's performance, you can deploy it for use in your application. This might involve integrating the model into your application's codebase or using it as a standalone service.
-
-   ```python
-   model.save_pretrained('./fine-tuned-model')
-   tokenizer.save_pretrained('./fine-tuned-model')
-
-   ```
-
-   This code saves the fine-tuned model to the fine-tuned-model directory, which can then be used in your application or deployed as a standalone service.
+**Question Answering**: Tokenize the user's question. Use the inverted index to find documents containing the question words.
+Use a ranking algorithm (e.g., TF-IDF) to score the retrieved documents based on their relevance to the question.
+Return the top-ranked document(s) or a summary as the answer.
 
 ### Llama-2-7b
 

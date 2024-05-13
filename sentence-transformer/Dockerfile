@@ -1,10 +1,5 @@
 # syntax=docker/dockerfile:1
 
-# https://docs.docker.com/go/dockerfile-reference/
-
-# Dockerfile co-generated with `docker init`
-
-# -- BASE IMAGE --
 ARG PYTHON_VERSION
 FROM python:${PYTHON_VERSION} as base
 
@@ -40,7 +35,7 @@ RUN adduser \
 RUN --mount=type=cache,target=/root/.cache/pip \
     --mount=type=bind,source=Pipfile,target=Pipfile \
     --mount=type=bind,source=Pipfile.lock,target=Pipfile.lock \
-    pip install pipenv && PIPENV_VENV_IN_PROJECT=1 pipenv install --system --deploy
+    pip install pipenv
 
 ENV PATH="/.venv/bin:$PATH"
 
