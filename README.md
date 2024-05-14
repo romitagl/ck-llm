@@ -9,7 +9,7 @@ Custom Knowledge LLM - Use a base LLM and infuse structured knowledge
 This approach retrieves relevant documents from my Wiki repository: [wiki](https://github.com/romitagl/kgraph.wiki.git).
 
 Sentence Transformer:
-We use the SentenceTransformer library and the "all-mpnet-base-v2" model to encode questions and documents into high-dimensional vectors.
+We use the SentenceTransformer library and the [all-mpnet-base-v2](https://huggingface.co/sentence-transformers/all-mpnet-base-v2) model to encode questions and documents into high-dimensional vectors.
 The SentenceTransformer library is a powerful tool that can be used for a variety of natural language processing tasks, including question answering.
 The "all-mpnet-base-v2" model is a pre-trained language model that is specifically designed for question answering.
 When we encode a question or document using this model, we get a fixed-length vector that captures the meaning of the input.
